@@ -4,12 +4,12 @@
 int main()
 {
 	Graph<int> graph(9);
-	/*{
-		{0, 1, 0, 0},
-		{1, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-	};*/
+	//{
+	//	{0, 1, 0, 0},
+	//	{1, 0, 0, 0},
+	//	{0, 0, 0, 1},
+	//	{0, 0, 1, 0},
+	//};
 
 	Edge edge(3 - 1, 2 - 1);
 	graph.insertEdge(edge, 1);
@@ -37,7 +37,10 @@ int main()
 
 	std::cout << graph << "\n";
 	std::cout << graph.isLinked() << "\n";
+	graph.createDotFile("test.dot");
 
+	system("dot .\\test.dot -Tpng -o out.png");
+	system(".\\out.png");
 
 	return 0;
 }

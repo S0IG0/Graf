@@ -134,6 +134,13 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Matrix.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="graph.dot" />
+    <None Include="test.dot" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="out.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

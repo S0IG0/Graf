@@ -4,6 +4,7 @@
 #define EnableUnderline "\033[4m"
 #define DisableUnderline "\033[0m"
 #include <queue>
+#include <fstream>
 #include "Matrix.h"
 #include "Edge.h"
 
@@ -16,6 +17,7 @@ public:
 	~Graph() override;
 	
 	void insertEdge(Edge& edge, T value);
+	void createDotFile(std::string path);
 	bool isLinked();
 
 };
@@ -45,6 +47,41 @@ inline void Graph<T>::insertEdge(Edge& edge, T value)
 		this->matrixArray[edge.top1][edge.top2] = value;
 		this->matrixArray[edge.top2][edge.top1] = value;
 	}
+}
+
+template<typename T>
+inline void Graph<T>::createDotFile(std::string path)
+{
+	std::fstream file(path, std::ios_base::out);
+	file << "digraph test {\n\tlayout = \"twopi\"\n\tnode[shape = circle]\n\tedge[shape = vee]\n";
+
+	for (size_t i = 0; i < this->n; i++)
+	{
+		bool isLively = false;
+		for (size_t j = 0; j < this->n; j++)
+		{
+			if (this->matrixArray[i][j] != T())
+			{
+				isLively = true;
+				break;
+			}
+		}
+
+		if (isLively == false)
+		{
+			continue;
+		}
+
+		for (size_t j = 0; j < this->n; j++)
+		{
+			if (this->matrixArray[i][j] != T())
+			{
+				file << "\t" << i << " -> " << j << " " << "[label = \"" << this->matrixArray[i][j] << "\"]\n";
+			}
+		}
+	}
+
+	file << "}";
 }
 
 template<typename T>
