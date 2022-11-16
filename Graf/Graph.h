@@ -59,13 +59,10 @@ inline bool Graph<T>::isLinked()
 
 	Node* arrayNode = new Node[this->n];
 
-	for (size_t i = 0; i < this->n; i++)
-	{
-		arrayNode[i] = Node{i, false, false};
-	}
 
 	for (size_t i = 0; i < this->n; i++)
 	{
+		arrayNode[i] = Node{ i, false, false };
 		for (size_t j = 0; j < this->n; j++)
 		{
 			if (this->matrixArray[i][j] != T())
@@ -77,16 +74,8 @@ inline bool Graph<T>::isLinked()
 	}
 
 	std::queue<size_t> queue;
-	arrayNode[0].isVisit = true;
 
-	for (size_t i = 0; i < this->n; i++)
-	{
-		if (this->matrixArray[0][i] != T())
-		{
-			queue.push(i);
-		}
-	}
-
+	queue.push(0);
 	while (!queue.empty())
 	{
 		size_t index = queue.front();
@@ -149,7 +138,11 @@ std::ostream& operator<< (std::ostream& ostream, Graph<T>& graph)
 
 	for (size_t i = 0; std::getline(stringstream, string, '\n'); i++)
 	{
-		ostream << i << "|" << string << "\n";
+		ostream << i << "|" << string;
+		if (i < (graph.size() - 1))
+		{
+			ostream << "\n";
+		}
 	}
 
 	return ostream;
