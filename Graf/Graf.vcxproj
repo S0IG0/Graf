@@ -135,7 +135,6 @@
     <ClInclude Include="Matrix.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="graph.dot" />
     <None Include="test.dot" />
   </ItemGroup>
   <ItemGroup>

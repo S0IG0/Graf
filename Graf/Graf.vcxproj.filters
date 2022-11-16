@@ -31,9 +31,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="graph.dot">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
     <None Include="test.dot">
       <Filter>Файлы ресурсов</Filter>
     </None>
