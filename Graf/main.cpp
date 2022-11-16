@@ -3,7 +3,7 @@
 
 int main()
 {
-	Graph<int> graph(9);
+	Graph<int> graph(17);
 	//{
 	//	{0, 1, 0, 0},
 	//	{1, 0, 0, 0},
@@ -35,8 +35,11 @@ int main()
 	edge = Edge(7 - 1, 6 - 1);
 	graph.insertEdge(edge, 1);
 
+	edge = Edge(15, 16);
+	graph.insertEdge(edge, 1);
+
 	std::cout << graph << "\n";
-	std::cout << graph.isLinked() << "\n";
+	std::cout << std::boolalpha << graph.isLinked() << "\n";
 	graph.createDotFile("test.dot");
 
 	system("dot .\\test.dot -Tpng -o out.png");

@@ -13,6 +13,7 @@ class Matrix
 {
 public:
 	Matrix(size_t n);
+	Matrix(T** matrix, size_t n);
 	Matrix(Matrix<T>& matrix);
 	Matrix(std::initializer_list<std::initializer_list<T>> matrix);
 	virtual ~Matrix();
@@ -37,6 +38,20 @@ Matrix<T>::Matrix(size_t n) : n(n)
 		for (size_t j = 0; j < n; j++)
 		{
 			matrixArray[i][j] = T();
+		}
+	}
+}
+
+template<typename T>
+inline Matrix<T>::Matrix(T** matrix, size_t n) : n(n)
+{
+	matrixArray = new T * [n];
+	for (size_t i = 0; i < n; i++)
+	{
+		matrixArray[i] = new T[n];
+		for (size_t j = 0; j < n; j++)
+		{
+			matrixArray[i][j] = matrix[i][j];
 		}
 	}
 }
