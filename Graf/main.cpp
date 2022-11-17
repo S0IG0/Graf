@@ -125,8 +125,9 @@ void manipulateGraph()
 
 int main()
 {
-	testGraph1();
-	testGraph2();
-	
+	//testGraph1();
+	//testGraph2();
+	manipulateGraph();
+
 	return 0;
 }
