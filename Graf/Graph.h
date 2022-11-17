@@ -6,6 +6,7 @@
 #define TYPE true
 #include <queue>
 #include <fstream>
+#include <algorithm>
 #include "Matrix.h"
 #include "Edge.h"
 
@@ -21,7 +22,7 @@ public:
 	void createDotFile(std::string path, std::string type = "dot", bool digraph = TYPE);
 	bool isLinked();
 
-	size_t findMinDistance(T start, T end);
+	std::string findMinDistance(size_t start, size_t end);
 
 };
 
@@ -87,6 +88,7 @@ inline void Graph<T>::createDotFile(std::string path, std::string type, bool dig
 
 		if (isLively == false)
 		{
+			file << "\t" << i << "\n";
 			continue;
 		}
 
@@ -187,10 +189,135 @@ inline bool Graph<T>::isLinked()
 }
 
 template<typename T>
-inline size_t Graph<T>::findMinDistance(T start, T end)
+inline std::string Graph<T>::findMinDistance(size_t start, size_t end)
 {
+	if (!((start >= 0 && start < this->n) && (end >= 0 && end < this->n) && (start != end)))
+	{
+		return "None";
+	}
 
-	return size_t();
+	std::stringstream stringstream;
+
+	size_t size = this->n;
+	size_t maxWeight = 0;
+	Matrix<T> matrix(this->matrixArray, size);
+	std::queue<size_t> queue;
+	size_t* minValues = new size_t[size];
+	bool* nodeIsVisit = new bool[size];
+
+	try
+	{
+		for (size_t i = 0; i < size; i++)
+		{
+			for (size_t j = 0; j < size; j++)
+			{
+				maxWeight += matrix[i][j];
+			}
+		}
+		maxWeight += 1;
+
+		for (size_t i = 0; i < size; i++)
+		{
+			nodeIsVisit[i] = false;
+			minValues[i] = maxWeight;
+		}
+		minValues[start] = 0;
+		queue.push(start);
+
+		while (!queue.empty())
+		{
+			size_t index = queue.front();
+			queue.pop();
+
+			if (nodeIsVisit[index] == true) { continue; }
+
+			nodeIsVisit[index] = true;
+			for (size_t i = 0; i < size; i++)
+			{
+				if (matrix[index][i] != T() && nodeIsVisit[i] == false)
+				{
+					queue.push(i);
+
+					size_t value = minValues[index] + matrix[index][i];
+					if (value < minValues[i])
+					{
+						minValues[i] = value;
+					}
+				}
+			}
+		}
+
+		for (size_t i = 0; i < this->n; i++)
+		{
+			for (size_t j = 0; j < this->n; j++)
+			{
+				if (matrix[i][j] != T())
+				{
+					matrix[j][i] = matrix[i][j];
+				}
+				else if (matrix[j][i] != T())
+				{
+					matrix[i][j] = matrix[j][i];
+				}
+			}
+		}
+
+		if (minValues[end] == maxWeight)
+		{
+			delete[] nodeIsVisit;
+			delete[] minValues;
+
+			return "None";
+		}
+
+		size_t travelValue = minValues[end];
+		size_t index = end;
+
+		std::vector<size_t> travel{ end };
+
+		while (index != start && minValues[end] != maxWeight)
+		{
+			for (size_t i = 0; i < size; i++)
+			{
+				if (matrix[index][i] != T())
+				{
+					if ((travelValue - matrix[index][i]) == minValues[i])
+					{
+						travelValue = minValues[i];
+						index = i;
+						travel.push_back(index);
+						break;
+					}
+				}
+			}
+		}
+
+		std::reverse(travel.begin(), travel.end());
+
+		for (size_t i = 0; i < travel.size(); i++)
+		{
+			stringstream << travel[i];
+
+			if (i != (travel.size() - 1))
+			{
+				stringstream << " --{" << matrix[travel[i]][travel[i + 1]] << "}--> ";
+			}
+			else
+			{
+				stringstream << ": " << minValues[end];
+			}
+		}
+	}
+	catch (const std::exception&)
+	{
+		stringstream.str(std::string());
+		stringstream << "None";
+	}
+
+	delete[] nodeIsVisit;
+	delete[] minValues;
+
+	return stringstream.str();
 }
 
 
@@ -213,7 +340,7 @@ std::ostream& operator<< (std::ostream& ostream, Graph<T>& graph)
 		}
 	}
 	std::string tempString(" ", maxWidthVertical);
-	ostream << "  " << tempString << EnableUnderline << std::setw(2);
+	ostream << " " << tempString << EnableUnderline << std::setw(2);
 	for (size_t i = 0; i < n; i++)
 	{
 		ostream << " " << std::setw(maxWidth + 1) << i;
