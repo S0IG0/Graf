@@ -4,6 +4,7 @@
 #define EnableUnderline "\033[4m"
 #define DisableUnderline "\033[0m"
 #define TYPE true
+//#define DEBUG
 #include <queue>
 #include <fstream>
 #include <algorithm>
@@ -14,27 +15,30 @@ template<typename T>
 class Graph : public Matrix<T>
 {
 public:
-	Graph(size_t n);
-	Graph(std::initializer_list<std::initializer_list<T>> matrix);
+	Graph(size_t n, bool digraph = false);
+	Graph(std::initializer_list<std::initializer_list<T>> matrix, bool digraph = false);
 	~Graph() override;
 	
-	void insertEdge(Edge& edge, T value, bool digraph = TYPE);
-	void createDotFile(std::string path, std::string type = "dot", bool digraph = TYPE);
+	void insertEdge(Edge& edge, T value);
+	void createDotFile(std::string path, std::string type = "dot");
 	bool isLinked();
 
 	std::string findMinDistance(size_t start, size_t end);
+
+private:
+	bool digraph = false;
 
 };
 
 #endif // !_GRAPH_H_
 
 template<typename T>
-inline Graph<T>::Graph(size_t n) : Matrix<T>(n)
+inline Graph<T>::Graph(size_t n, bool digraph) : Matrix<T>(n), digraph(digraph)
 {
 }
 
 template<typename T>
-inline Graph<T>::Graph(std::initializer_list<std::initializer_list<T>> matrix) : Matrix<T>(matrix)
+inline Graph<T>::Graph(std::initializer_list<std::initializer_list<T>> matrix, bool digraph) : Matrix<T>(matrix), digraph(digraph)
 {
 }
 
@@ -44,7 +48,7 @@ inline Graph<T>::~Graph()
 }
 
 template<typename T>
-inline void Graph<T>::insertEdge(Edge& edge, T value, bool digraph)
+inline void Graph<T>::insertEdge(Edge& edge, T value)
 {
 	if (edge.top1 != edge.top2)
 	{
@@ -57,7 +61,7 @@ inline void Graph<T>::insertEdge(Edge& edge, T value, bool digraph)
 }
 
 template<typename T>
-inline void Graph<T>::createDotFile(std::string path, std::string type, bool digraph)
+inline void Graph<T>::createDotFile(std::string path, std::string type)
 {
 	std::fstream file(path, std::ios_base::out);
 
@@ -119,8 +123,7 @@ inline bool Graph<T>::isLinked()
 	struct Node
 	{
 		size_t index;
-		bool isVisit;
-		bool isLively;
+		bool isVisit = false;
 	};
 
 	Node* arrayNode = new Node[this->n];
@@ -141,19 +144,6 @@ inline bool Graph<T>::isLinked()
 		}
 	}
 
-	for (size_t i = 0; i < this->n; i++)
-	{
-		arrayNode[i] = Node{ i, false, false };
-		for (size_t j = 0; j < this->n; j++)
-		{
-			if (matrix[i][j] != T())
-			{
-				arrayNode[i].isLively = true;
-				break;
-			}
-		}
-	}
-
 	std::queue<size_t> queue;
 
 	queue.push(0);
@@ -163,7 +153,7 @@ inline bool Graph<T>::isLinked()
 		arrayNode[index].isVisit = true;
 		queue.pop();
 
-		for (size_t i = 0; i < matrix.size(); i++)
+		for (size_t i = 0; i < this->n; i++)
 		{
 			if (matrix[index][i] != T() && arrayNode[i].isVisit == false)
 			{
@@ -173,9 +163,9 @@ inline bool Graph<T>::isLinked()
 		}
 	}
 
-	for (size_t i = 0; i < matrix.size(); i++)
+	for (size_t i = 0; i < this->n; i++)
 	{
-		if (arrayNode[i].isVisit == false && arrayNode[i].isLively == true)
+		if (arrayNode[i].isVisit == false)
 		{
 			delete[] arrayNode;
 
@@ -209,58 +199,79 @@ inline std::string Graph<T>::findMinDistance(size_t start, size_t end)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
+			nodeIsVisit[i] = false;
 			for (size_t j = 0; j < size; j++)
 			{
 				maxWeight += matrix[i][j];
 			}
 		}
-		maxWeight += 1;
+		maxWeight *= 2;
 
-		for (size_t i = 0; i < size; i++)
-		{
-			nodeIsVisit[i] = false;
-			minValues[i] = maxWeight;
-		}
+		for (size_t i = 0; i < size; i++) { minValues[i] = maxWeight; }
+
 		minValues[start] = 0;
 		queue.push(start);
 
 		while (!queue.empty())
 		{
+			std::vector<size_t> indexsTops;
 			size_t index = queue.front();
+
+
 			queue.pop();
 
 			if (nodeIsVisit[index] == true) { continue; }
 
-			nodeIsVisit[index] = true;
 			for (size_t i = 0; i < size; i++)
 			{
-				if (matrix[index][i] != T() && nodeIsVisit[i] == false)
+				if (matrix[index][i] != T())
 				{
-					queue.push(i);
-
 					size_t value = minValues[index] + matrix[index][i];
 					if (value < minValues[i])
 					{
 						minValues[i] = value;
 					}
+					if (nodeIsVisit[i] == false)
+					{
+						//queue.push(i);
+						indexsTops.push_back(i);
+					}
 				}
+			}
+			nodeIsVisit[index] = true;
+
+			//
+			std::sort(indexsTops.begin(), indexsTops.end(),
+				[&matrix, &index](size_t& x, size_t& y) { return matrix[index][x] < matrix[index][y]; }
+			);
+			for (size_t _index: indexsTops)
+			{
+				queue.push(_index);
 			}
 		}
 
+#ifdef DEBUG
+		// DEBUG
 		for (size_t i = 0; i < this->n; i++)
 		{
-			for (size_t j = 0; j < this->n; j++)
+			std::cout << i << ": " << minValues[i] << "\n";
+		}
+		// !DEBUG
+#endif // DEBUG
+
+
+		for (size_t i = 0; i < this->n; i++)
+		{
+			for (size_t j = 0; j < i; j++)
 			{
-				if (matrix[i][j] != T())
-				{
-					matrix[j][i] = matrix[i][j];
-				}
-				else if (matrix[j][i] != T())
-				{
-					matrix[i][j] = matrix[j][i];
-				}
+				std::swap(matrix[i][j], matrix[j][i]);
 			}
 		}
+
+#ifdef DEBUG
+		std::cout << matrix << "\n";
+#endif // DEBUG
+
 
 		if (minValues[end] == maxWeight)
 		{
@@ -300,7 +311,7 @@ inline std::string Graph<T>::findMinDistance(size_t start, size_t end)
 
 			if (i != (travel.size() - 1))
 			{
-				stringstream << " --{" << matrix[travel[i]][travel[i + 1]] << "}--> ";
+				stringstream << " --{" << matrix[travel[i + 1]][travel[i]] << "}--> ";
 			}
 			else
 			{

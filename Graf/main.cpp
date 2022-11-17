@@ -1,106 +1,132 @@
 #include <iostream>
 #include "Graph.h"
 
-int main()
+void testGraph1()
 {
-	Graph<int> graph(7);
-	//{
-	//	{0, 1, 0, 0},
-	//	{1, 0, 0, 0},
-	//	{0, 0, 0, 1},
-	//	{0, 0, 1, 0},
-	//};
+	Graph<int> graph(
+		{
+			{  0,  0,  0,  0,  0,  0,  0,  0},
+			{  0,  0,  0,  0,  0, 11,  8,  0},
+			{  0,  1,  0, 12,  0,  0,  0,  0},
+			{  0,  0,  0,  0,  6,  0,  0,  0},
+			{  0,  0,  0,  0,  0,  0,  0,  7},
+			{  0,  0, 13,  2,  0,  0,  0,  3},
+			{  0,  0,  0,  0,  0,  2,  0,  0},
+			{  0,  0,  0,  6,  0,  0,  5,  0}
+		},
+		true
+	);
 
-	/*Edge edge(3 - 1, 2 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(3 - 1, 1 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(3 - 1, 6 - 1);
-	graph.insertEdge(edge, 1);
+	std::cout << graph.findMinDistance(2, 1) << "\n";
+	std::cout << graph.findMinDistance(2, 3) << "\n";
+	std::cout << graph.findMinDistance(2, 4) << "\n";
+	std::cout << graph.findMinDistance(2, 5) << "\n";
+	std::cout << graph.findMinDistance(2, 6) << "\n";
+	std::cout << graph.findMinDistance(2, 7) << "\n";
 
-	edge = Edge(1 - 1, 4 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(4 - 1, 5 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(5 - 1, 8 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(5 - 1, 8 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(5 - 1, 7 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(8 - 1, 7 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(7 - 1, 9 - 1);
-	graph.insertEdge(edge, 1);
-	edge = Edge(7 - 1, 6 - 1);
-	graph.insertEdge(edge, 1);
-
-	edge = Edge(15, 16);
-	graph.insertEdge(edge, 1);*/
-
-	//Edge edge(1, 2);
-	//graph.insertEdge(edge, 7);
-
-	//edge = Edge(1, 3);
-	//graph.insertEdge(edge, 9);
-
-	//edge = Edge(1, 6);
-	//graph.insertEdge(edge, 14);
-
-	//edge = Edge(2, 3);
-	//graph.insertEdge(edge, 10);
-
-	//edge = Edge(2, 4);
-	//graph.insertEdge(edge, 15);
-
-	//edge = Edge(3, 4);
-	//graph.insertEdge(edge, 11);
-
-	//edge = Edge(3, 6);
-	//graph.insertEdge(edge, 2);
-
-	//edge = Edge(6, 5);
-	//graph.insertEdge(edge, 9);
-
-	//edge = Edge(4, 5);
-	//graph.insertEdge(edge, 6);
-
-	Edge edge(1, 2);
-	graph.insertEdge(edge, 2);
-
-	edge = Edge(1, 3);
-	graph.insertEdge(edge, 5);
-
-	edge = Edge(1, 3);
-	graph.insertEdge(edge, 5);
-
-	edge = Edge(2, 4);
-	graph.insertEdge(edge, 6);
-
-	edge = Edge(2, 5);
-	graph.insertEdge(edge, 10);
-
-	edge = Edge(3, 5);
-	graph.insertEdge(edge, 8);
-
-	edge = Edge(3, 4);
-	graph.insertEdge(edge, 9);
-
-	edge = Edge(5, 6);
-	graph.insertEdge(edge, 3);
-
-	edge = Edge(4, 6);
-	graph.insertEdge(edge, 4);	
-
-	std::cout << graph << "\n";
-	std::cout << std::boolalpha << graph.isLinked() << "\n";
 	graph.createDotFile("test.dot");
-
-	std::cout << graph.findMinDistance(1, 6) << "\n";
 
 	system("dot .\\test.dot -Tpng -o out.png");
 	system(".\\out.png");
-
-	return 0;
 }
 
+void testGraph2()
+{
+	Graph<int> graph(
+		{
+			{  0,  0,  0,  0,  0,  0,  0,  0},
+			{  0,  0,  1,  0,  0, 11,  8,  0},
+			{  0, 15,  0, 12,  0,  0,  0,  0},
+			{  0,  0,  0,  0,  6,  1,  0,  0},
+			{  0,  0,  0,  0,  0,  9,  0,  7},
+			{  0,  0, 13,  2,  0,  0,  0,  3},
+			{  0,  7,  0,  0,  0,  4,  0,  0},
+			{  0,  0,  0,  6, 17,  0,  5,  0}
+		},
+		true
+	);
+
+
+	std::cout << graph.findMinDistance(2, 1) << "\n";
+	std::cout << graph.findMinDistance(2, 3) << "\n";
+	std::cout << graph.findMinDistance(2, 4) << "\n";
+	std::cout << graph.findMinDistance(2, 5) << "\n";
+	std::cout << graph.findMinDistance(2, 6) << "\n";
+	std::cout << graph.findMinDistance(2, 7) << "\n";
+
+	graph.createDotFile("test.dot");
+
+	system("dot .\\test.dot -Tpng -o out.png");
+	system(".\\out.png");
+}
+
+void manipulateGraph()
+{
+	setlocale(LC_ALL, "ru");
+
+	bool type = false;
+	size_t size = 0;
+
+	std::cout << "“ип граффа (0 - несв€зный / 1 - св€зный): ";
+	std::cin >> type;
+
+	std::cout << "¬ведите кол-во вершин в граффе: ";
+	std::cin >> size;
+
+	Edge edge(0, 0);
+	Graph<int> graph(size, type);
+
+	std::size_t n;
+	
+	std::cout << "¬ведите кол-во ребр которые хотите добавить: ";
+	std::cin >> n;
+	
+	size_t top1, top2;
+	int value;
+	for (size_t i = 0; i < n; i++)
+	{
+		std::cout << "¬ведите вершину 1: ";
+		std::cin >> top1;
+
+		std::cout << "¬ведите вершину 2: ";
+		std::cin >> top2;
+
+		std::cout << "¬ведите вес (ребра/дуги): ";
+		std::cin >> value;
+
+		edge = Edge(top1, top2);
+		graph.insertEdge(edge, value);
+
+		std::cout << "\n";
+	}
+
+
+	std::cout << graph << "\n";
+	std::cout << "явл€етс€ ли графф св€зным: " << std::boolalpha << graph.isLinked() << "\n";
+	graph.createDotFile("test.dot");
+
+	std::cout << "¬ведите кол-во орпераций по поиску минимального пути из вершины 1 в вершину 2: ";
+	std::cin >> n;
+
+	for (size_t i = 0; i < n; i++)
+	{
+		std::cout << "¬ведите вершину 1: ";
+		std::cin >> top1;
+
+		std::cout << "¬ведите вершину 2: ";
+		std::cin >> top2;
+
+		std::cout << graph.findMinDistance(top1, top2) << "\n\n";
+	}
+
+	system("dot .\\test.dot -Tpng -o out.png");
+	system(".\\out.png");
+}
+
+int main()
+{
+	testGraph1();
+	testGraph2();
+	
+	return 0;
+}
