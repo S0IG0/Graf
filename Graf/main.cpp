@@ -1,6 +1,20 @@
 #include <iostream>
 #include "Graph.h"
 
+
+static std::string engines[] = {
+	"dot",
+	"sfdp",
+	//"neato",
+	//"fdp",
+	//"circo",
+	//"twopi",
+	//"nop",
+	//"nop2",
+	//"osage",
+	//"patchwork",
+};
+
 void testGraph1()
 {
 	Graph<int> graph(
@@ -24,10 +38,15 @@ void testGraph1()
 	std::cout << graph.findMinDistance(2, 6) << "\n";
 	std::cout << graph.findMinDistance(2, 7) << "\n";
 
-	graph.createDotFile("test.dot");
+	for (std::string& typeEngin : engines)
+	{
+		std::cout << typeEngin << "\n";
+		graph.createDotFile("test.dot", typeEngin);
 
-	system("dot .\\test.dot -Tpng -o out.png");
-	system(".\\out.png");
+		system("dot .\\test.dot -Tpng -o out.png");
+		system(".\\out.png");
+		system("pause");
+	}
 }
 
 void testGraph2()
@@ -54,10 +73,15 @@ void testGraph2()
 	std::cout << graph.findMinDistance(2, 6) << "\n";
 	std::cout << graph.findMinDistance(2, 7) << "\n";
 
-	graph.createDotFile("test.dot");
+	for (std::string& typeEngin: engines)
+	{
+		std::cout << typeEngin << "\n";
+		graph.createDotFile("test.dot", typeEngin);
 
-	system("dot .\\test.dot -Tpng -o out.png");
-	system(".\\out.png");
+		system("dot .\\test.dot -Tpng -o out.png");
+		system(".\\out.png");
+		system("pause");
+	}
 }
 
 void manipulateGraph()
@@ -67,20 +91,20 @@ void manipulateGraph()
 	bool type = false;
 	size_t size = 0;
 
-	std::cout << "“ип граффа (0 - несв€зный / 1 - св€зный): ";
+	std::cout << "“ип графа (0 - неориентированный / 1 - ориентированный): ";
 	std::cin >> type;
 
-	std::cout << "¬ведите кол-во вершин в граффе: ";
+	std::cout << "¬ведите кол-во вершин в графе: ";
 	std::cin >> size;
 
 	Edge edge(0, 0);
 	Graph<int> graph(size, type);
 
 	std::size_t n;
-	
-	std::cout << "¬ведите кол-во ребр которые хотите добавить: ";
+
+	std::cout << "¬ведите кол-во ребр/дуг которые хотите добавить: ";
 	std::cin >> n;
-	
+
 	size_t top1, top2;
 	int value;
 	for (size_t i = 0; i < n; i++)
@@ -102,8 +126,7 @@ void manipulateGraph()
 
 
 	std::cout << graph << "\n";
-	std::cout << "явл€етс€ ли графф св€зным: " << std::boolalpha << graph.isLinked() << "\n";
-	graph.createDotFile("test.dot");
+	std::cout << "явл€етс€ ли граф св€зным: " << std::boolalpha << graph.isLinked() << "\n";
 
 	std::cout << "¬ведите кол-во орпераций по поиску минимального пути из вершины 1 в вершину 2: ";
 	std::cin >> n;
@@ -119,14 +142,21 @@ void manipulateGraph()
 		std::cout << graph.findMinDistance(top1, top2) << "\n\n";
 	}
 
-	system("dot .\\test.dot -Tpng -o out.png");
-	system(".\\out.png");
+	for (std::string& typeEngin : engines)
+	{
+		std::cout << typeEngin << "\n";
+		graph.createDotFile("test.dot", typeEngin);
+
+		system("dot .\\test.dot -Tpng -o out.png");
+		system(".\\out.png");
+		system("pause");
+	}
 }
 
 int main()
 {
-	//testGraph1();
-	//testGraph2();
+	testGraph1();
+	testGraph2();
 	manipulateGraph();
 
 	return 0;
